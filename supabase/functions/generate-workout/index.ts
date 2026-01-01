@@ -20,6 +20,44 @@ serve(async (req) => {
 
     const systemPrompt = `You are a certified personal trainer and fitness expert. Create personalized workout plans using a PPL (Push/Pull/Legs) split structure.
 
+IMPORTANT: You MUST ONLY use exercise names EXACTLY as listed below. Do not substitute, rename, or create new exercises.
+
+AVAILABLE EXERCISES:
+
+PUSH EXERCISES:
+- Barbell Bench Press (Chest, Triceps, Shoulders)
+- Incline Dumbbell Press (Chest, Shoulders, Triceps)
+- Push-Ups (Chest, Triceps, Shoulders)
+- Cable Flyes (Chest)
+- Barbell Overhead Press (Shoulders, Triceps, Traps)
+- Dumbbell Lateral Raises (Shoulders)
+- Tricep Pushdown (Triceps)
+- Skull Crushers (Triceps)
+
+PULL EXERCISES:
+- Pull-Ups (Lats, Back, Biceps, Forearms)
+- Barbell Bent-Over Rows (Back, Lats, Biceps, Forearms, Traps)
+- Lat Pulldown (Lats, Biceps, Back)
+- Seated Cable Row (Back, Biceps, Lats, Traps)
+- Face Pulls (Shoulders, Traps, Back)
+- Barbell Curl (Biceps, Forearms)
+- Hammer Curls (Biceps, Forearms)
+
+LEGS EXERCISES:
+- Barbell Back Squat (Quads, Glutes, Hamstrings)
+- Conventional Deadlift (Back, Glutes, Hamstrings, Quads, Forearms, Traps)
+- Leg Press (Quads, Glutes, Hamstrings)
+- Romanian Deadlift (Hamstrings, Glutes, Back)
+- Walking Lunges (Quads, Glutes, Hamstrings)
+- Lying Leg Curl (Hamstrings)
+- Standing Calf Raises (Calves)
+
+CORE EXERCISES:
+- Plank (Abs, Obliques, Shoulders)
+- Hanging Leg Raises (Abs, Obliques, Forearms)
+- Cable Woodchops (Obliques, Abs, Shoulders)
+- Russian Twists (Obliques, Abs)
+
 PPL Structure by Training Days:
 - 3 days: Push / Pull / Legs
 - 4 days: Push / Pull / Legs / Upper (Push + Pull)
@@ -27,10 +65,10 @@ PPL Structure by Training Days:
 - 6 days: Push / Pull / Legs / Push / Pull / Legs
 
 Day Categories:
-- Push: Chest, Shoulders, Triceps (bench press, overhead press, dips, flyes, tricep extensions)
-- Pull: Back, Biceps, Rear Delts (rows, pull-ups, lat pulldowns, curls, face pulls)
-- Legs: Quads, Hamstrings, Glutes, Calves (squats, deadlifts, lunges, leg press, calf raises)
-- Upper (for 4-day split): Combine push and pull movements
+- Push: Use PUSH EXERCISES from the list above
+- Pull: Use PULL EXERCISES from the list above
+- Legs: Use LEGS EXERCISES from the list above
+- Upper (for 4-day split): Combine PUSH and PULL exercises
 
 Guidelines:
 - Adjust exercise selection, rep ranges, and rest periods based on gender:
@@ -42,10 +80,8 @@ Guidelines:
   - Endurance: 2-3 sets, 15-25 reps, 30-45 sec rest
 - Include 5-7 exercises per day (including core)
 - Use compound movements as primary exercises
-- ALWAYS include 1-2 core exercises at the END of each workout as finishers:
-  - Core exercises: Planks, Hanging Leg Raises, Russian Twists, Cable Woodchops, Ab Rollouts, Dead Bugs, Bicycle Crunches, Mountain Climbers
-  - Vary core exercises across days for complete ab development
-  - Match core rep ranges to the training goal`;
+- ALWAYS include 1-2 CORE EXERCISES at the END of each workout as finishers
+- Vary core exercises across days for complete ab development`;
 
     const userPrompt = `Create a ${splitDays}-day workout program for a ${gender || 'unspecified gender'} trainee.
 Training goal: ${goal}

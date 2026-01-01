@@ -23,7 +23,7 @@ export interface Exercise {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   videoUrl: string;
   instructions: string[];
-  category: 'push' | 'pull' | 'legs' | 'core' | 'compound' | 'cardio';
+  category: 'push' | 'pull' | 'legs' | 'core' | 'compound' | 'cardio' | 'stretching';
 }
 
 export const exercises: Exercise[] = [
@@ -600,6 +600,268 @@ export const exercises: Exercise[] = [
       'Return by extending arms, then bending knees'
     ],
     category: 'cardio'
+  },
+
+  // STRETCHING - Dynamic Stretches (Pre-workout)
+  {
+    id: 'leg-swings',
+    name: 'Leg Swings (Front/Back)',
+    primaryMuscles: ['hamstrings', 'quads'],
+    secondaryMuscles: ['glutes'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/AkqakLhh1fI',
+    instructions: [
+      'Stand next to a wall or sturdy object for balance',
+      'Swing one leg forward and backward in a controlled manner',
+      'Keep your core engaged and standing leg slightly bent',
+      'Perform 10-15 swings per leg'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'arm-circles',
+    name: 'Arm Circles',
+    primaryMuscles: ['shoulders'],
+    secondaryMuscles: ['traps'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/140RTsLjjgs',
+    instructions: [
+      'Stand with feet shoulder-width apart',
+      'Extend arms out to sides at shoulder height',
+      'Make small circles, gradually increasing size',
+      'Reverse direction after 15-20 circles'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'hip-circles',
+    name: 'Hip Circles',
+    primaryMuscles: ['glutes'],
+    secondaryMuscles: ['abs', 'obliques'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/5PoEQKjH1lg',
+    instructions: [
+      'Stand with feet shoulder-width apart, hands on hips',
+      'Make large circles with your hips',
+      'Keep upper body stable',
+      'Perform 10 circles in each direction'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'walking-high-knees',
+    name: 'Walking High Knees',
+    primaryMuscles: ['quads'],
+    secondaryMuscles: ['abs', 'glutes'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/ZZZoCNMU48U',
+    instructions: [
+      'Walk forward while lifting knees to hip height',
+      'Pump opposite arm with each step',
+      'Keep core engaged and back straight',
+      'Continue for 20-30 steps'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'butt-kicks',
+    name: 'Butt Kicks',
+    primaryMuscles: ['quads', 'hamstrings'],
+    secondaryMuscles: ['calves'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/Bsj4QC7xgJk',
+    instructions: [
+      'Jog in place or move forward',
+      'Kick heels up toward glutes',
+      'Keep upper body upright',
+      'Continue for 20-30 seconds'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'torso-twists',
+    name: 'Standing Torso Twists',
+    primaryMuscles: ['obliques'],
+    secondaryMuscles: ['abs', 'back'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/8yKcJDnCr5A',
+    instructions: [
+      'Stand with feet shoulder-width apart',
+      'Extend arms in front or hold them at chest',
+      'Rotate torso side to side',
+      'Keep hips facing forward'
+    ],
+    category: 'stretching'
+  },
+
+  // STRETCHING - Static Stretches (Post-workout)
+  {
+    id: 'standing-hamstring-stretch',
+    name: 'Standing Hamstring Stretch',
+    primaryMuscles: ['hamstrings'],
+    secondaryMuscles: ['calves', 'back'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/LdAdFy4-EqE',
+    instructions: [
+      'Stand with feet together',
+      'Hinge at hips and reach toward toes',
+      'Keep knees slightly bent if needed',
+      'Hold for 20-30 seconds'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'quad-stretch',
+    name: 'Standing Quad Stretch',
+    primaryMuscles: ['quads'],
+    secondaryMuscles: [],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/WJm9zA2NY8E',
+    instructions: [
+      'Stand on one leg, use wall for balance if needed',
+      'Grab ankle and pull heel toward glute',
+      'Keep knees together and hips forward',
+      'Hold for 20-30 seconds per leg'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'pigeon-pose',
+    name: 'Pigeon Pose',
+    primaryMuscles: ['glutes'],
+    secondaryMuscles: ['hamstrings'],
+    equipment: 'Mat',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/n4r1fVHuSCE',
+    instructions: [
+      'Start in plank or all-fours position',
+      'Bring one knee forward behind your wrist',
+      'Extend back leg straight behind you',
+      'Lower torso over front leg and hold 30-60 seconds'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'chest-doorway-stretch',
+    name: 'Chest Doorway Stretch',
+    primaryMuscles: ['chest'],
+    secondaryMuscles: ['shoulders'],
+    equipment: 'Doorway',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/WLd9T1mmrLk',
+    instructions: [
+      'Stand in a doorway with arms on door frame',
+      'Elbows at 90 degrees at shoulder height',
+      'Step forward to feel stretch in chest',
+      'Hold for 20-30 seconds'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'tricep-stretch',
+    name: 'Overhead Tricep Stretch',
+    primaryMuscles: ['triceps'],
+    secondaryMuscles: ['shoulders'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/FX_hWQSL2CU',
+    instructions: [
+      'Raise one arm overhead',
+      'Bend elbow and reach hand toward opposite shoulder blade',
+      'Use other hand to gently push elbow back',
+      'Hold for 20-30 seconds per arm'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'child-pose',
+    name: "Child's Pose",
+    primaryMuscles: ['back', 'lats'],
+    secondaryMuscles: ['shoulders', 'glutes'],
+    equipment: 'Mat',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/eqVMAPM00DM',
+    instructions: [
+      'Kneel on floor with toes together, knees apart',
+      'Sit back on heels and extend arms forward',
+      'Lower forehead to floor',
+      'Hold for 30-60 seconds, breathing deeply'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'cat-cow-stretch',
+    name: 'Cat-Cow Stretch',
+    primaryMuscles: ['back'],
+    secondaryMuscles: ['abs', 'shoulders'],
+    equipment: 'Mat',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/kqnua4rHVVA',
+    instructions: [
+      'Start on hands and knees in tabletop position',
+      'Inhale: drop belly, lift head and tailbone (cow)',
+      'Exhale: round spine, tuck chin and tailbone (cat)',
+      'Flow between positions for 10-15 reps'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: 'seated-forward-fold',
+    name: 'Seated Forward Fold',
+    primaryMuscles: ['hamstrings', 'back'],
+    secondaryMuscles: ['calves'],
+    equipment: 'Mat',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/t7Hdz6sBu_s',
+    instructions: [
+      'Sit with legs extended straight in front',
+      'Hinge at hips and reach toward toes',
+      'Keep spine long, avoid rounding back excessively',
+      'Hold for 30-60 seconds'
+    ],
+    category: 'stretching'
+  },
+
+  // STRETCHING - Mobility Work
+  {
+    id: 'worlds-greatest-stretch',
+    name: "World's Greatest Stretch",
+    primaryMuscles: ['hamstrings', 'glutes'],
+    secondaryMuscles: ['back', 'shoulders', 'quads'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/IikP_teeLkI',
+    instructions: [
+      'Start in a lunge position with back knee off ground',
+      'Place same-side hand on floor inside front foot',
+      'Rotate torso and reach opposite arm to ceiling',
+      'Hold briefly, then switch sides. Repeat 5-8 per side'
+    ],
+    category: 'stretching'
+  },
+  {
+    id: '90-90-hip-stretch',
+    name: '90/90 Hip Stretch',
+    primaryMuscles: ['glutes'],
+    secondaryMuscles: ['hamstrings'],
+    equipment: 'Mat',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/9gH1Gxz7wkU',
+    instructions: [
+      'Sit with one leg in front bent 90 degrees, other behind also 90 degrees',
+      'Keep spine tall and both hips grounded',
+      'Lean forward over front leg for deeper stretch',
+      'Hold for 30-60 seconds per side'
+    ],
+    category: 'stretching'
   }
 ];
 export const muscleGroups: { id: MuscleGroup; name: string; category: string }[] = [

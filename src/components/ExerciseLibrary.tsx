@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { exercises, muscleGroups, MuscleGroup } from '@/data/exercises';
 import { ExerciseCard } from './ExerciseCard';
+import { InteractiveMuscleSelector } from './InteractiveMuscleSelector';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, X } from 'lucide-react';
@@ -36,6 +37,10 @@ export function ExerciseLibrary() {
     );
   };
 
+  const clearMuscleSelection = () => {
+    setSelectedMuscles([]);
+  };
+
   const clearFilters = () => {
     setSearch('');
     setSelectedMuscles([]);
@@ -63,10 +68,18 @@ export function ExerciseLibrary() {
     { id: 'core', label: 'Core' },
     { id: 'compound', label: 'Compound' },
     { id: 'cardio', label: 'Cardio' },
+    { id: 'stretching', label: 'Stretching' },
   ];
 
   return (
     <div className="space-y-6">
+      {/* Interactive Muscle Map */}
+      <InteractiveMuscleSelector
+        selectedMuscles={selectedMuscles}
+        onMuscleToggle={toggleMuscle}
+        onClear={clearMuscleSelection}
+      />
+
       {/* Search and Filters */}
       <div className="space-y-4">
         <div className="relative">

@@ -116,7 +116,33 @@ FOR MALE WEIGHT LOSS:
 
 FOR OTHER GOALS (non weight-loss):
 - Female: Prioritize glute/leg exercises, slightly higher reps (12-15), shorter rest periods
-- Male: Include more heavy compound movements, lower rep ranges (8-12), longer rest periods`;
+- Male: Include more heavy compound movements, lower rep ranges (8-12), longer rest periods
+
+EXERCISE ORDERING RULES (CRITICAL - apply to ALL workouts):
+Order exercises within each day by MUSCLE GROUP, completing all exercises for one muscle before moving to the next.
+
+PUSH DAY ORDER:
+1. Chest exercises first (Barbell Bench Press → Incline Dumbbell Press → Push-Ups → Cable Flyes)
+2. Shoulder exercises second (Barbell Overhead Press → Dumbbell Lateral Raises)
+3. Tricep exercises last (Tricep Pushdown → Skull Crushers)
+4. Core finishers
+
+PULL DAY ORDER:
+1. Back/Lat compound exercises first (Pull-Ups → Barbell Bent-Over Rows)
+2. Back isolation exercises (Lat Pulldown → Seated Cable Row)
+3. Rear delt/trap work (Face Pulls)
+4. Bicep exercises last (Barbell Curl → Hammer Curls)
+5. Core finishers
+
+LEGS DAY ORDER:
+1. Glute-dominant compounds first (Hip Thrust → Romanian Deadlift)
+2. Quad-dominant compounds (Barbell Back Squat → Leg Press → Walking Lunges)
+3. Hamstring isolation (Lying Leg Curl)
+4. Calf work (Standing Calf Raises)
+5. Core finishers
+
+GENERAL PRINCIPLE: Within each muscle group, order from compound to isolation movements.
+Example Push Day: Barbell Bench Press → Incline Dumbbell Press → Cable Flyes → Barbell Overhead Press → Dumbbell Lateral Raises → Tricep Pushdown → Skull Crushers → Core`;
 
     const userPrompt = `Create a ${splitDays}-day workout program for a ${gender || 'unspecified gender'} trainee.
 Training goal: ${goal}

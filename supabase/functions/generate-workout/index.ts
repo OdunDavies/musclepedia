@@ -49,6 +49,7 @@ LEGS EXERCISES:
 - Leg Press (Quads, Glutes, Hamstrings)
 - Romanian Deadlift (Hamstrings, Glutes, Back)
 - Walking Lunges (Quads, Glutes, Hamstrings)
+- Hip Thrust (Glutes, Hamstrings, Quads) - PRIORITIZE FOR FEMALE WEIGHT LOSS
 - Lying Leg Curl (Hamstrings)
 - Standing Calf Raises (Calves)
 
@@ -95,12 +96,14 @@ GENDER-SPECIFIC WEIGHT LOSS PROTOCOLS (CRITICAL - apply when goal is Weight Loss
 FOR FEMALE WEIGHT LOSS:
 - Structure: Full-body metabolic circuits or supersets within PPL framework
 - Rep ranges: 12-20 reps with moderate weight to maximize calorie burn
-- Rest periods: 20-30 seconds between exercises, 60-90 seconds between circuits
-- Exercise priority: Emphasize glute, leg, and back exercises (Romanian Deadlift, Walking Lunges, Leg Press, Lat Pulldown)
-- Include 2-3 CARDIO/HIIT exercises per session (Burpees, Mountain Climbers, Kettlebell Swings, Jump Rope, Box Jumps)
-- Pair exercises as supersets when possible for metabolic effect
-- Focus: Compound movements in circuit format to maximize calorie burn and EPOC (excess post-exercise oxygen consumption)
-- Add plyometric variations: Box Jumps, Jump Rope, Burpees
+- Rest periods: 15-25 seconds between exercises, 45-60 seconds between circuits (keep heart rate elevated)
+- GLUTE PRIORITY (CRITICAL): Include Hip Thrust AND Romanian Deadlift in EVERY leg day. Add Walking Lunges or Leg Press as secondary glute work.
+- Exercise priority order: Hip Thrust > Romanian Deadlift > Walking Lunges > Barbell Back Squat > Leg Press
+- Include 3-4 CARDIO/HIIT exercises per session spread throughout (Burpees, Mountain Climbers, Kettlebell Swings, Jump Rope, Box Jumps, Jumping Jacks)
+- Structure each workout as: Glute compound → Cardio burst → Upper body → Cardio burst → Glute isolation → Core → Cardio finisher
+- Pair exercises as supersets: e.g., Hip Thrust superset with Jump Rope, Romanian Deadlift superset with Mountain Climbers
+- Focus: Maximum calorie burn through elevated heart rate + glute-focused compound movements for EPOC
+- Add plyometric variations throughout: Box Jumps, Jump Rope, Burpees, Jumping Jacks
 
 FOR MALE WEIGHT LOSS:
 - Structure: Traditional PPL with cardio finishers

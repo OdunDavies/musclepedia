@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ExerciseLibrary } from '@/components/ExerciseLibrary';
 import { WorkoutGenerator } from '@/components/WorkoutGenerator';
-import { Dumbbell, Library, Sparkles } from 'lucide-react';
+import { WorkoutTemplates } from '@/components/WorkoutTemplates';
+import { Dumbbell, Library, Sparkles, LayoutTemplate } from 'lucide-react';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('library');
@@ -27,14 +28,18 @@ const Index = () => {
       {/* Main Content */}
       <main className="container max-w-6xl mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-xl grid-cols-3">
             <TabsTrigger value="library" className="flex items-center gap-2">
               <Library className="w-4 h-4" />
-              Exercise Library
+              <span className="hidden sm:inline">Exercise</span> Library
+            </TabsTrigger>
+            <TabsTrigger value="templates" className="flex items-center gap-2">
+              <LayoutTemplate className="w-4 h-4" />
+              Templates
             </TabsTrigger>
             <TabsTrigger value="generator" className="flex items-center gap-2">
               <Sparkles className="w-4 h-4" />
-              Plan Generator
+              <span className="hidden sm:inline">AI</span> Generator
             </TabsTrigger>
           </TabsList>
 
@@ -48,9 +53,19 @@ const Index = () => {
             <ExerciseLibrary />
           </TabsContent>
 
+          <TabsContent value="templates" className="mt-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold mb-2">Workout Templates</h2>
+              <p className="text-muted-foreground">
+                Pre-made workout routines to get you started quickly. Click any template to view details.
+              </p>
+            </div>
+            <WorkoutTemplates />
+          </TabsContent>
+
           <TabsContent value="generator" className="mt-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2">Workout Generator</h2>
+              <h2 className="text-2xl font-bold mb-2">AI Workout Generator</h2>
               <p className="text-muted-foreground">
                 Get a personalized workout split based on your goals and target muscles.
               </p>

@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
-import { muscleGroups, MuscleGroup } from '@/data/exercises';
-import { Loader2, Download, Dumbbell, Calendar, Sparkles, Save, History, Trash2, Pencil, Check, X } from 'lucide-react';
+import { MuscleGroup } from '@/data/exercises';
+import { Loader2, Download, Dumbbell, Calendar, Sparkles, Save, History, Trash2, Pencil, Check, X, ChevronLeft, ChevronRight, User, Target, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { WizardProgress } from './workout-wizard/WizardProgress';
+import { StepSchedule } from './workout-wizard/StepSchedule';
+import { StepProfile } from './workout-wizard/StepProfile';
+import { StepGoal } from './workout-wizard/StepGoal';
+import { StepMuscles } from './workout-wizard/StepMuscles';
+import { StepReview } from './workout-wizard/StepReview';
 
 interface WorkoutDay {
   day: string;
@@ -37,8 +40,18 @@ interface SavedPlan extends GeneratedPlan {
 }
 
 const STORAGE_KEY = 'workout-planner-saved-plans';
+const TOTAL_STEPS = 5;
+
+const wizardSteps = [
+  { title: 'Schedule', icon: <Calendar className="w-5 h-5" /> },
+  { title: 'Profile', icon: <User className="w-5 h-5" /> },
+  { title: 'Goal', icon: <Target className="w-5 h-5" /> },
+  { title: 'Muscles', icon: <Zap className="w-5 h-5" /> },
+  { title: 'Review', icon: <Sparkles className="w-5 h-5" /> },
+];
 
 export function WorkoutGenerator() {
+  const [currentStep, setCurrentStep] = useState(1);
   const [splitDays, setSplitDays] = useState<string>('4');
   const [gender, setGender] = useState<string>('');
   const [goal, setGoal] = useState<string>('strength');
@@ -134,6 +147,35 @@ export function WorkoutGenerator() {
     );
   };
 
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1:
+        return !!splitDays;
+      case 2:
+        return !!gender;
+      case 3:
+        return !!goal;
+      case 4:
+        return true; // Muscles are optional
+      case 5:
+        return true;
+      default:
+        return false;
+    }
+  };
+
+  const nextStep = () => {
+    if (currentStep < TOTAL_STEPS && canProceed()) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   const generateWorkoutPlan = async () => {
     if (!gender) {
       toast({
@@ -224,16 +266,27 @@ export function WorkoutGenerator() {
     URL.revokeObjectURL(url);
   };
 
-  const groupedMuscles = muscleGroups.reduce(
-    (acc, muscle) => {
-      if (!acc[muscle.category]) {
-        acc[muscle.category] = [];
-      }
-      acc[muscle.category].push(muscle);
-      return acc;
-    },
-    {} as Record<string, typeof muscleGroups>
-  );
+  const startNewPlan = () => {
+    setGeneratedPlan(null);
+    setCurrentStep(1);
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1:
+        return <StepSchedule splitDays={splitDays} setSplitDays={setSplitDays} />;
+      case 2:
+        return <StepProfile gender={gender} setGender={setGender} />;
+      case 3:
+        return <StepGoal goal={goal} setGoal={setGoal} />;
+      case 4:
+        return <StepMuscles targetMuscles={targetMuscles} toggleMuscle={toggleMuscle} />;
+      case 5:
+        return <StepReview splitDays={splitDays} gender={gender} goal={goal} targetMuscles={targetMuscles} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -325,134 +378,70 @@ export function WorkoutGenerator() {
           )}
         </Card>
       )}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Dumbbell className="w-5 h-5" />
-            Generate Your Workout Plan
-          </CardTitle>
-          <CardDescription>
-            Customize your preferences to create a personalized workout split
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Split Days Selection */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
-              How many days per week?
-            </Label>
-            <RadioGroup
-              value={splitDays}
-              onValueChange={setSplitDays}
-              className="flex flex-wrap gap-3"
-            >
-              {['3', '4', '5', '6'].map((days) => (
-                <div key={days} className="flex items-center space-x-2">
-                  <RadioGroupItem value={days} id={`days-${days}`} />
-                  <Label htmlFor={`days-${days}`} className="cursor-pointer">
-                    {days} Days
-                  </Label>
-                </div>
-              ))}
-          </RadioGroup>
-          </div>
 
-          {/* Gender Selection */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium">Gender</Label>
-            <RadioGroup
-              value={gender}
-              onValueChange={setGender}
-              className="flex flex-wrap gap-3"
-            >
-              {[
-                { value: 'male', label: 'Male' },
-                { value: 'female', label: 'Female' },
-              ].map((g) => (
-                <div key={g.value} className="flex items-center space-x-2">
-                  <RadioGroupItem value={g.value} id={`gender-${g.value}`} />
-                  <Label htmlFor={`gender-${g.value}`} className="cursor-pointer">
-                    {g.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+      {/* Wizard or Generated Plan */}
+      {!generatedPlan ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Dumbbell className="w-5 h-5" />
+              Generate Your Workout Plan
+            </CardTitle>
+            <CardDescription>
+              Step {currentStep} of {TOTAL_STEPS} — {wizardSteps[currentStep - 1].title}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            {/* Progress Indicator */}
+            <WizardProgress 
+              currentStep={currentStep} 
+              totalSteps={TOTAL_STEPS} 
+              steps={wizardSteps} 
+            />
 
-          {/* Goal Selection */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium">Training Goal</Label>
-            <RadioGroup
-              value={goal}
-              onValueChange={setGoal}
-              className="flex flex-wrap gap-3"
-            >
-              {[
-                { value: 'strength', label: 'Strength (Low reps, heavy weight)' },
-                { value: 'hypertrophy', label: 'Muscle Growth (Moderate reps)' },
-                { value: 'endurance', label: 'Endurance (High reps)' },
-                { value: 'weight-loss', label: 'Lose Weight (High volume, short rest)' },
-              ].map((g) => (
-                <div key={g.value} className="flex items-center space-x-2">
-                  <RadioGroupItem value={g.value} id={`goal-${g.value}`} />
-                  <Label htmlFor={`goal-${g.value}`} className="cursor-pointer">
-                    {g.label}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </div>
+            {/* Step Content */}
+            <div className="min-h-[300px]">
+              {renderStep()}
+            </div>
 
-          {/* Target Muscles */}
-          <div className="space-y-3">
-            <Label className="text-base font-medium">
-              Target Muscles (optional - leave empty for full body)
-            </Label>
-            {Object.entries(groupedMuscles).map(([category, muscles]) => (
-              <div key={category}>
-                <p className="text-xs text-muted-foreground mb-2">{category}</p>
-                <div className="flex flex-wrap gap-2">
-                  {muscles.map((muscle) => (
-                    <div key={muscle.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={muscle.id}
-                        checked={targetMuscles.includes(muscle.id)}
-                        onCheckedChange={() => toggleMuscle(muscle.id)}
-                      />
-                      <Label htmlFor={muscle.id} className="cursor-pointer text-sm">
-                        {muscle.name}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+            {/* Navigation Buttons */}
+            <div className="flex justify-between pt-4 border-t">
+              <Button
+                variant="outline"
+                onClick={prevStep}
+                disabled={currentStep === 1}
+              >
+                <ChevronLeft className="w-4 h-4 mr-2" />
+                Back
+              </Button>
 
-          <Button
-            onClick={generateWorkoutPlan}
-            disabled={isGenerating}
-            className="w-full"
-            size="lg"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Generating Your Plan...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Generate Workout Plan
-              </>
-            )}
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Generated Plan Display */}
-      {generatedPlan && (
+              {currentStep < TOTAL_STEPS ? (
+                <Button onClick={nextStep} disabled={!canProceed()}>
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={generateWorkoutPlan}
+                  disabled={isGenerating || !canProceed()}
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate Plan
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -462,10 +451,14 @@ export function WorkoutGenerator() {
                   Goal: {generatedPlan.goal.charAt(0).toUpperCase() + generatedPlan.goal.slice(1)}
                 </CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
+                <Button onClick={startNewPlan} variant="outline" size="sm">
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  New Plan
+                </Button>
                 <Button onClick={savePlan} variant="outline" size="sm">
                   <Save className="w-4 h-4 mr-2" />
-                  Save Plan
+                  Save
                 </Button>
                 <Button onClick={downloadPlan} variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />

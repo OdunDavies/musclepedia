@@ -50,7 +50,7 @@ const Index = () => {
 
           <TabsContent value="generator" className="mt-6">
             <div className="mb-6">
-              <h2 className="text-2xl font-bold mb-2">AI Workout Generator</h2>
+              <h2 className="text-2xl font-bold mb-2">Workout Generator</h2>
               <p className="text-muted-foreground">
                 Get a personalized workout split based on your goals and target muscles.
               </p>

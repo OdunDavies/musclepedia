@@ -154,7 +154,7 @@ export function WorkoutGenerator() {
             Generate Your Workout Plan
           </CardTitle>
           <CardDescription>
-            Customize your preferences and let AI create a personalized workout split
+            Customize your preferences to create a personalized workout split
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -214,6 +214,7 @@ export function WorkoutGenerator() {
                 { value: 'strength', label: 'Strength (Low reps, heavy weight)' },
                 { value: 'hypertrophy', label: 'Muscle Growth (Moderate reps)' },
                 { value: 'endurance', label: 'Endurance (High reps)' },
+                { value: 'weight-loss', label: 'Lose Weight (High volume, short rest)' },
               ].map((g) => (
                 <div key={g.value} className="flex items-center space-x-2">
                   <RadioGroupItem value={g.value} id={`goal-${g.value}`} />

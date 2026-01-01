@@ -388,6 +388,23 @@ export const exercises: Exercise[] = [
     ],
     category: 'legs'
   },
+  {
+    id: 'hip-thrust',
+    name: 'Hip Thrust',
+    primaryMuscles: ['glutes'],
+    secondaryMuscles: ['hamstrings', 'quads'],
+    equipment: 'Barbell, Bench',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/SEdqd1n0cvg',
+    instructions: [
+      'Sit on floor with upper back against bench',
+      'Roll barbell over hips (use pad for comfort)',
+      'Drive through heels, squeeze glutes to lift hips',
+      'Pause at top with hips fully extended',
+      'Lower with control, keeping core engaged'
+    ],
+    category: 'legs'
+  },
 
   // CORE
   {

@@ -9,6 +9,7 @@ export function ExerciseLibrary() {
   const [search, setSearch] = useState('');
   const [selectedMuscles, setSelectedMuscles] = useState<MuscleGroup[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const filteredExercises = useMemo(() => {
     return exercises.filter((exercise) => {
@@ -22,10 +23,12 @@ export function ExerciseLibrary() {
         );
       const matchesDifficulty =
         !selectedDifficulty || exercise.difficulty === selectedDifficulty;
+      const matchesCategory =
+        !selectedCategory || exercise.category === selectedCategory;
 
-      return matchesSearch && matchesMuscle && matchesDifficulty;
+      return matchesSearch && matchesMuscle && matchesDifficulty && matchesCategory;
     });
-  }, [search, selectedMuscles, selectedDifficulty]);
+  }, [search, selectedMuscles, selectedDifficulty, selectedCategory]);
 
   const toggleMuscle = (muscle: MuscleGroup) => {
     setSelectedMuscles((prev) =>
@@ -37,6 +40,7 @@ export function ExerciseLibrary() {
     setSearch('');
     setSelectedMuscles([]);
     setSelectedDifficulty(null);
+    setSelectedCategory(null);
   };
 
   const groupedMuscles = muscleGroups.reduce(
@@ -50,7 +54,16 @@ export function ExerciseLibrary() {
     {} as Record<string, typeof muscleGroups>
   );
 
-  const hasActiveFilters = search || selectedMuscles.length > 0 || selectedDifficulty;
+  const hasActiveFilters = search || selectedMuscles.length > 0 || selectedDifficulty || selectedCategory;
+
+  const categories = [
+    { id: 'push', label: 'Push' },
+    { id: 'pull', label: 'Pull' },
+    { id: 'legs', label: 'Legs' },
+    { id: 'core', label: 'Core' },
+    { id: 'compound', label: 'Compound' },
+    { id: 'cardio', label: 'Cardio' },
+  ];
 
   return (
     <div className="space-y-6">
@@ -64,6 +77,25 @@ export function ExerciseLibrary() {
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
           />
+        </div>
+
+        {/* Category Filter */}
+        <div>
+          <p className="text-sm font-medium mb-2">Category</p>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <Badge
+                key={cat.id}
+                variant={selectedCategory === cat.id ? 'default' : 'outline'}
+                className="cursor-pointer"
+                onClick={() =>
+                  setSelectedCategory(selectedCategory === cat.id ? null : cat.id)
+                }
+              >
+                {cat.label}
+              </Badge>
+            ))}
+          </div>
         </div>
 
         {/* Difficulty Filter */}

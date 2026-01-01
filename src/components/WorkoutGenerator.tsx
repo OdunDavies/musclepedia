@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { muscleGroups, MuscleGroup } from '@/data/exercises';
-import { Loader2, Download, Dumbbell, Calendar, Sparkles } from 'lucide-react';
+import { Loader2, Download, Dumbbell, Calendar, Sparkles, Save, History, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -29,6 +29,14 @@ interface GeneratedPlan {
   schedule: WorkoutDay[];
 }
 
+interface SavedPlan extends GeneratedPlan {
+  id: string;
+  name: string;
+  savedAt: string;
+}
+
+const STORAGE_KEY = 'workout-planner-saved-plans';
+
 export function WorkoutGenerator() {
   const [splitDays, setSplitDays] = useState<string>('4');
   const [gender, setGender] = useState<string>('');
@@ -36,7 +44,60 @@ export function WorkoutGenerator() {
   const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState<GeneratedPlan | null>(null);
+  const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
+  const [showSavedPlans, setShowSavedPlans] = useState(false);
   const { toast } = useToast();
+
+  // Load saved plans from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      try {
+        setSavedPlans(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse saved plans:', e);
+      }
+    }
+  }, []);
+
+  // Save plans to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedPlans));
+  }, [savedPlans]);
+
+  const savePlan = () => {
+    if (!generatedPlan) return;
+
+    const newPlan: SavedPlan = {
+      ...generatedPlan,
+      id: crypto.randomUUID(),
+      name: `${generatedPlan.splitDays}-Day ${generatedPlan.goal} Plan`,
+      savedAt: new Date().toISOString(),
+    };
+
+    setSavedPlans((prev) => [newPlan, ...prev]);
+    toast({
+      title: "Plan Saved!",
+      description: "Your workout plan has been saved locally.",
+    });
+  };
+
+  const loadPlan = (plan: SavedPlan) => {
+    setGeneratedPlan(plan);
+    setShowSavedPlans(false);
+    toast({
+      title: "Plan Loaded",
+      description: `Loaded "${plan.name}"`,
+    });
+  };
+
+  const deletePlan = (id: string) => {
+    setSavedPlans((prev) => prev.filter((p) => p.id !== id));
+    toast({
+      title: "Plan Deleted",
+      description: "The workout plan has been removed.",
+    });
+  };
 
   const toggleMuscle = (muscle: MuscleGroup) => {
     setTargetMuscles((prev) =>
@@ -147,6 +208,53 @@ export function WorkoutGenerator() {
 
   return (
     <div className="space-y-6">
+      {/* Saved Plans Toggle */}
+      {savedPlans.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base flex items-center gap-2">
+                <History className="w-4 h-4" />
+                Saved Plans ({savedPlans.length})
+              </CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSavedPlans(!showSavedPlans)}
+              >
+                {showSavedPlans ? 'Hide' : 'Show'}
+              </Button>
+            </div>
+          </CardHeader>
+          {showSavedPlans && (
+            <CardContent className="pt-0">
+              <div className="space-y-2">
+                {savedPlans.map((plan) => (
+                  <div
+                    key={plan.id}
+                    className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  >
+                    <div className="flex-1 cursor-pointer" onClick={() => loadPlan(plan)}>
+                      <p className="font-medium text-sm">{plan.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Saved {new Date(plan.savedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => deletePlan(plan.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -284,10 +392,16 @@ export function WorkoutGenerator() {
                   Goal: {generatedPlan.goal.charAt(0).toUpperCase() + generatedPlan.goal.slice(1)}
                 </CardDescription>
               </div>
-              <Button onClick={downloadPlan} variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Download Plan
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={savePlan} variant="outline" size="sm">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Plan
+                </Button>
+                <Button onClick={downloadPlan} variant="outline" size="sm">
+                  <Download className="w-4 h-4 mr-2" />
+                  Download
+                </Button>
+              </div>
             </div>
           </CardHeader>
           <CardContent>

@@ -28,6 +28,7 @@ interface GeneratedPlan {
 
 export function WorkoutGenerator() {
   const [splitDays, setSplitDays] = useState<string>('4');
+  const [gender, setGender] = useState<string>('');
   const [goal, setGoal] = useState<string>('strength');
   const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -212,6 +213,28 @@ export function WorkoutGenerator() {
                   <RadioGroupItem value={days} id={`days-${days}`} />
                   <Label htmlFor={`days-${days}`} className="cursor-pointer">
                     {days} Days
+                  </Label>
+                </div>
+              ))}
+          </RadioGroup>
+          </div>
+
+          {/* Gender Selection */}
+          <div className="space-y-3">
+            <Label className="text-base font-medium">Gender</Label>
+            <RadioGroup
+              value={gender}
+              onValueChange={setGender}
+              className="flex flex-wrap gap-3"
+            >
+              {[
+                { value: 'male', label: 'Male' },
+                { value: 'female', label: 'Female' },
+              ].map((g) => (
+                <div key={g.value} className="flex items-center space-x-2">
+                  <RadioGroupItem value={g.value} id={`gender-${g.value}`} />
+                  <Label htmlFor={`gender-${g.value}`} className="cursor-pointer">
+                    {g.label}
                   </Label>
                 </div>
               ))}

@@ -78,6 +78,7 @@ Guidelines:
   - Strength: 4-5 sets, 3-8 reps, 2-4 min rest
   - Hypertrophy: 3-4 sets, 8-15 reps, 60-90 sec rest
   - Endurance: 2-3 sets, 15-25 reps, 30-45 sec rest
+  - Weight Loss: 3-4 sets, 12-20 reps, 30-45 sec rest (prioritize compound movements for higher calorie burn)
 - Include 5-7 exercises per day (including core)
 - Use compound movements as primary exercises
 - ALWAYS include 1-2 CORE EXERCISES at the END of each workout as finishers

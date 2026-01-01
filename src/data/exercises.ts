@@ -23,7 +23,7 @@ export interface Exercise {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   videoUrl: string;
   instructions: string[];
-  category: 'push' | 'pull' | 'legs' | 'core' | 'compound';
+  category: 'push' | 'pull' | 'legs' | 'core' | 'compound' | 'cardio';
 }
 
 export const exercises: Exercise[] = [
@@ -453,9 +453,138 @@ export const exercises: Exercise[] = [
       'Keep core engaged'
     ],
     category: 'core'
+  },
+
+  // CARDIO / HIIT
+  {
+    id: 'jumping-jacks',
+    name: 'Jumping Jacks',
+    primaryMuscles: ['quads', 'calves'],
+    secondaryMuscles: ['shoulders', 'glutes'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/c4DAnQ6DtF8',
+    instructions: [
+      'Stand with feet together, arms at sides',
+      'Jump feet out while raising arms overhead',
+      'Jump back to starting position',
+      'Maintain a steady rhythm'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'burpees',
+    name: 'Burpees',
+    primaryMuscles: ['quads', 'chest'],
+    secondaryMuscles: ['shoulders', 'triceps', 'abs', 'glutes'],
+    equipment: 'Bodyweight',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/dZgVxmf6jkA',
+    instructions: [
+      'Start standing, drop into squat with hands on floor',
+      'Jump feet back into plank position',
+      'Perform a push-up (optional)',
+      'Jump feet forward and explode up with arms overhead'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'mountain-climbers',
+    name: 'Mountain Climbers',
+    primaryMuscles: ['abs'],
+    secondaryMuscles: ['shoulders', 'quads', 'glutes'],
+    equipment: 'Bodyweight',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/nmwgirgXLYM',
+    instructions: [
+      'Start in plank position',
+      'Drive one knee toward chest',
+      'Quickly switch legs in a running motion',
+      'Keep hips low and core engaged'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'box-jumps',
+    name: 'Box Jumps',
+    primaryMuscles: ['quads', 'glutes'],
+    secondaryMuscles: ['calves', 'hamstrings'],
+    equipment: 'Plyo Box',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/NBY9-kTuHEk',
+    instructions: [
+      'Stand facing the box with feet shoulder-width apart',
+      'Bend knees and swing arms back',
+      'Explode up and land softly on box',
+      'Step down and repeat'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'battle-ropes',
+    name: 'Battle Ropes',
+    primaryMuscles: ['shoulders'],
+    secondaryMuscles: ['biceps', 'triceps', 'abs', 'back'],
+    equipment: 'Battle Ropes',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/a5YtGf6Q3Rs',
+    instructions: [
+      'Hold rope ends with firm grip',
+      'Slight squat stance with core braced',
+      'Create alternating waves with arms',
+      'Maintain intensity for timed intervals'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'kettlebell-swings',
+    name: 'Kettlebell Swings',
+    primaryMuscles: ['glutes', 'hamstrings'],
+    secondaryMuscles: ['back', 'shoulders', 'abs'],
+    equipment: 'Kettlebell',
+    difficulty: 'intermediate',
+    videoUrl: 'https://www.youtube.com/embed/YSxHifyI6s8',
+    instructions: [
+      'Stand with feet wider than shoulder-width',
+      'Hinge at hips, grip kettlebell with both hands',
+      'Drive hips forward explosively to swing weight',
+      'Let weight swing to chest height, control descent'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'jump-rope',
+    name: 'Jump Rope',
+    primaryMuscles: ['calves'],
+    secondaryMuscles: ['quads', 'shoulders', 'forearms'],
+    equipment: 'Jump Rope',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/u3zgHI8QnqE',
+    instructions: [
+      'Hold handles at hip height',
+      'Rotate rope with wrists, not arms',
+      'Jump just high enough to clear rope',
+      'Land softly on balls of feet'
+    ],
+    category: 'cardio'
+  },
+  {
+    id: 'rowing-machine',
+    name: 'Rowing Machine',
+    primaryMuscles: ['back', 'lats'],
+    secondaryMuscles: ['biceps', 'quads', 'glutes', 'abs'],
+    equipment: 'Rowing Machine',
+    difficulty: 'beginner',
+    videoUrl: 'https://www.youtube.com/embed/H0r_ZPXJLtg',
+    instructions: [
+      'Sit with feet strapped in, grab handle',
+      'Push with legs first, then pull with arms',
+      'Lean back slightly at the finish',
+      'Return by extending arms, then bending knees'
+    ],
+    category: 'cardio'
   }
 ];
-
 export const muscleGroups: { id: MuscleGroup; name: string; category: string }[] = [
   { id: 'chest', name: 'Chest', category: 'Upper Body' },
   { id: 'back', name: 'Back', category: 'Upper Body' },

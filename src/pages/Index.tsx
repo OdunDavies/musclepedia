@@ -17,8 +17,8 @@ const Index = () => {
               <Dumbbell className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-xl font-bold tracking-tight">Workout Planner</h1>
-              <p className="text-xs text-muted-foreground">Build your perfect routine</p>
+              <h1 className="text-xl font-bold tracking-tight">Musclepedia</h1>
+              <p className="text-xs text-muted-foreground">Your complete exercise encyclopedia</p>
             </div>
           </div>
         </div>

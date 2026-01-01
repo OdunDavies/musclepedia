@@ -5,7 +5,8 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { muscleGroups, MuscleGroup } from '@/data/exercises';
-import { Loader2, Download, Dumbbell, Calendar, Sparkles, Save, History, Trash2 } from 'lucide-react';
+import { Loader2, Download, Dumbbell, Calendar, Sparkles, Save, History, Trash2, Pencil, Check, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -46,6 +47,8 @@ export function WorkoutGenerator() {
   const [generatedPlan, setGeneratedPlan] = useState<GeneratedPlan | null>(null);
   const [savedPlans, setSavedPlans] = useState<SavedPlan[]>([]);
   const [showSavedPlans, setShowSavedPlans] = useState(false);
+  const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
   const { toast } = useToast();
 
   // Load saved plans from localStorage on mount
@@ -96,6 +99,32 @@ export function WorkoutGenerator() {
     toast({
       title: "Plan Deleted",
       description: "The workout plan has been removed.",
+    });
+  };
+
+  const startEditing = (plan: SavedPlan) => {
+    setEditingPlanId(plan.id);
+    setEditingName(plan.name);
+  };
+
+  const cancelEditing = () => {
+    setEditingPlanId(null);
+    setEditingName('');
+  };
+
+  const saveRename = (id: string) => {
+    if (!editingName.trim()) {
+      cancelEditing();
+      return;
+    }
+    setSavedPlans((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, name: editingName.trim() } : p))
+    );
+    setEditingPlanId(null);
+    setEditingName('');
+    toast({
+      title: "Plan Renamed",
+      description: "Your workout plan has been renamed.",
     });
   };
 
@@ -234,20 +263,61 @@ export function WorkoutGenerator() {
                     key={plan.id}
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                   >
-                    <div className="flex-1 cursor-pointer" onClick={() => loadPlan(plan)}>
-                      <p className="font-medium text-sm">{plan.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Saved {new Date(plan.savedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                      onClick={() => deletePlan(plan.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    {editingPlanId === plan.id ? (
+                      <div className="flex-1 flex items-center gap-2 mr-2">
+                        <Input
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                          className="h-8 text-sm"
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') saveRename(plan.id);
+                            if (e.key === 'Escape') cancelEditing();
+                          }}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary"
+                          onClick={() => saveRename(plan.id)}
+                        >
+                          <Check className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={cancelEditing}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex-1 cursor-pointer" onClick={() => loadPlan(plan)}>
+                          <p className="font-medium text-sm">{plan.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Saved {new Date(plan.savedAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-primary"
+                          onClick={() => startEditing(plan)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={() => deletePlan(plan.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </>
+                    )}
                   </div>
                 ))}
               </div>

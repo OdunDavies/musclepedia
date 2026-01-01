@@ -4,9 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { muscleGroups, MuscleGroup, exercises } from '@/data/exercises';
-import { Loader2, Download, Dumbbell, Calendar } from 'lucide-react';
+import { muscleGroups, MuscleGroup } from '@/data/exercises';
+import { Loader2, Download, Dumbbell, Calendar, Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface WorkoutDay {
   day: string;
@@ -34,6 +36,7 @@ export function WorkoutGenerator() {
   const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState<GeneratedPlan | null>(null);
+  const { toast } = useToast();
 
   const toggleMuscle = (muscle: MuscleGroup) => {
     setTargetMuscles((prev) =>
@@ -41,141 +44,59 @@ export function WorkoutGenerator() {
     );
   };
 
-  const generateWorkoutPlan = () => {
+  const generateWorkoutPlan = async () => {
+    if (!gender) {
+      toast({
+        title: "Gender Required",
+        description: "Please select your gender to generate a personalized plan.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsGenerating(true);
     
-    // Simulate AI generation with intelligent workout split creation
-    setTimeout(() => {
-      const days = parseInt(splitDays);
-      const schedule: WorkoutDay[] = [];
-      
-      // Get exercises based on target muscles or all if none selected
-      const relevantExercises = targetMuscles.length > 0 
-        ? exercises.filter(e => 
-            e.primaryMuscles.some(m => targetMuscles.includes(m)) ||
-            e.secondaryMuscles.some(m => targetMuscles.includes(m))
-          )
-        : exercises;
-
-      // Define workout splits based on days
-      const splitTemplates: Record<number, { day: string; focus: string; categories: string[] }[]> = {
-        3: [
-          { day: 'Day 1', focus: 'Push (Chest, Shoulders, Triceps)', categories: ['push'] },
-          { day: 'Day 2', focus: 'Pull (Back, Biceps)', categories: ['pull'] },
-          { day: 'Day 3', focus: 'Legs & Core', categories: ['legs', 'core'] },
-        ],
-        4: [
-          { day: 'Day 1', focus: 'Upper Body Push', categories: ['push'] },
-          { day: 'Day 2', focus: 'Lower Body', categories: ['legs'] },
-          { day: 'Day 3', focus: 'Upper Body Pull', categories: ['pull'] },
-          { day: 'Day 4', focus: 'Legs & Core', categories: ['legs', 'core'] },
-        ],
-        5: [
-          { day: 'Day 1', focus: 'Chest & Triceps', categories: ['push'] },
-          { day: 'Day 2', focus: 'Back & Biceps', categories: ['pull'] },
-          { day: 'Day 3', focus: 'Legs', categories: ['legs'] },
-          { day: 'Day 4', focus: 'Shoulders & Arms', categories: ['push', 'pull'] },
-          { day: 'Day 5', focus: 'Full Body & Core', categories: ['compound', 'core'] },
-        ],
-        6: [
-          { day: 'Day 1', focus: 'Push (Chest Focus)', categories: ['push'] },
-          { day: 'Day 2', focus: 'Pull (Back Focus)', categories: ['pull'] },
-          { day: 'Day 3', focus: 'Legs (Quad Focus)', categories: ['legs'] },
-          { day: 'Day 4', focus: 'Push (Shoulder Focus)', categories: ['push'] },
-          { day: 'Day 5', focus: 'Pull (Lat Focus)', categories: ['pull'] },
-          { day: 'Day 6', focus: 'Legs (Posterior) & Core', categories: ['legs', 'core'] },
-        ],
-      };
-
-      const template = splitTemplates[days] || splitTemplates[4];
-      
-      // Rep and set schemes based on goal and gender
-      // Female workouts typically use slightly higher reps and shorter rest for toning
-      // Male workouts focus on heavier loads with lower reps
-      const isFemale = gender === 'female';
-      
-      const schemes = {
-        strength: { 
-          sets: isFemale ? 4 : 5, 
-          reps: isFemale ? '5-8' : '3-5', 
-          rest: isFemale ? '2-3 min' : '3-4 min' 
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-workout', {
+        body: {
+          splitDays: parseInt(splitDays),
+          gender,
+          goal,
+          targetMuscles,
         },
-        hypertrophy: { 
-          sets: isFemale ? 3 : 4, 
-          reps: isFemale ? '12-15' : '8-12', 
-          rest: isFemale ? '45-60 sec' : '60-90 sec' 
-        },
-        endurance: { 
-          sets: isFemale ? 3 : 3, 
-          reps: isFemale ? '18-25' : '15-20', 
-          rest: isFemale ? '20-30 sec' : '30-45 sec' 
-        },
-      };
-      
-      const scheme = schemes[goal as keyof typeof schemes] || schemes.hypertrophy;
-      
-      // Exercise preferences by gender (prioritize certain exercises)
-      const femalePreferredExercises = [
-        'Hip Thrust', 'Romanian Deadlift', 'Lunges', 'Glute Bridge', 
-        'Cable Kickbacks', 'Leg Press', 'Lat Pulldown', 'Dumbbell Row'
-      ];
-      
-      const malePreferredExercises = [
-        'Bench Press', 'Barbell Squat', 'Deadlift', 'Overhead Press',
-        'Barbell Row', 'Pull-ups', 'Dips', 'Barbell Curl'
-      ];
-
-      template.forEach((dayTemplate) => {
-        const preferredExercises = isFemale ? femalePreferredExercises : malePreferredExercises;
-        
-        // Sort exercises to prioritize gender-preferred ones
-        const sortedExercises = [...relevantExercises]
-          .filter((e) => dayTemplate.categories.includes(e.category))
-          .sort((a, b) => {
-            const aPreferred = preferredExercises.some(pe => a.name.includes(pe)) ? -1 : 0;
-            const bPreferred = preferredExercises.some(pe => b.name.includes(pe)) ? -1 : 0;
-            return aPreferred - bPreferred;
-          });
-        
-        const dayExercises = sortedExercises
-          .slice(0, 5)
-          .map((e) => ({
-            name: e.name,
-            sets: scheme.sets,
-            reps: scheme.reps,
-            rest: scheme.rest,
-          }));
-
-        // Add at least some exercises if category filter was too restrictive
-        if (dayExercises.length < 3) {
-          const additionalExercises = exercises
-            .filter((e) => dayTemplate.categories.includes(e.category))
-            .slice(0, 5 - dayExercises.length)
-            .map((e) => ({
-              name: e.name,
-              sets: scheme.sets,
-              reps: scheme.reps,
-              rest: scheme.rest,
-            }));
-          dayExercises.push(...additionalExercises);
-        }
-
-        schedule.push({
-          day: dayTemplate.day,
-          focus: dayTemplate.focus,
-          exercises: dayExercises,
-        });
       });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
 
       setGeneratedPlan({
-        splitDays: days,
+        splitDays: parseInt(splitDays),
         goal,
-        gender: gender || 'Not specified',
+        gender,
         targetMuscles: targetMuscles.length > 0 ? targetMuscles : ['All muscle groups'],
-        schedule,
+        schedule: data.schedule,
       });
+
+      toast({
+        title: "Workout Plan Generated!",
+        description: "Your personalized AI workout plan is ready.",
+      });
+
+    } catch (error) {
+      console.error("Error generating workout:", error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate workout plan. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsGenerating(false);
-    }, 1500);
+    }
   };
 
   const downloadPlan = () => {
@@ -339,10 +260,13 @@ export function WorkoutGenerator() {
             {isGenerating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Generating Plan...
+                AI is Generating Your Plan...
               </>
             ) : (
-              'Generate Workout Plan'
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Generate AI Workout Plan
+              </>
             )}
           </Button>
         </CardContent>

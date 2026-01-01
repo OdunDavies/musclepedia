@@ -2,11 +2,14 @@ import { Exercise } from '@/data/exercises';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MuscleMap } from './MuscleMap';
+import { ExercisePreviewCard } from './ExercisePreviewCard';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Dumbbell, Play } from 'lucide-react';
+import { Dumbbell, Play, Heart } from 'lucide-react';
 
 interface ExerciseCardProps {
   exercise: Exercise;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
 }
 
 const difficultyColors = {
@@ -15,64 +18,84 @@ const difficultyColors = {
   advanced: 'bg-foreground text-background',
 };
 
-export function ExerciseCard({ exercise }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, isFavorite = false, onToggleFavorite }: ExerciseCardProps) {
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleFavorite?.(exercise.id);
+  };
+
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Card className="exercise-card-hover cursor-pointer group">
-          <CardHeader className="pb-3">
-            <div className="flex justify-between items-start gap-2">
-              <CardTitle className="text-base font-semibold leading-tight group-hover:text-foreground/80 transition-colors">
-                {exercise.name}
-              </CardTitle>
-              <Play className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-            </div>
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              <Badge variant="outline" className={difficultyColors[exercise.difficulty]}>
-                {exercise.difficulty}
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                {exercise.category}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-center gap-4">
-              <MuscleMap
-                highlightedMuscles={exercise.primaryMuscles}
-                secondaryMuscles={exercise.secondaryMuscles}
-                size="sm"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground mb-1">Primary</p>
-                <div className="flex flex-wrap gap-1">
-                  {exercise.primaryMuscles.map((muscle) => (
-                    <Badge key={muscle} variant="secondary" className="text-xs capitalize">
-                      {muscle}
-                    </Badge>
-                  ))}
-                </div>
-                {exercise.secondaryMuscles.length > 0 && (
-                  <>
-                    <p className="text-xs text-muted-foreground mb-1 mt-2">Secondary</p>
-                    <div className="flex flex-wrap gap-1">
-                      {exercise.secondaryMuscles.map((muscle) => (
-                        <Badge key={muscle} variant="outline" className="text-xs capitalize">
-                          {muscle}
-                        </Badge>
-                      ))}
-                    </div>
-                  </>
-                )}
+      <ExercisePreviewCard exercise={exercise}>
+        <DialogTrigger asChild>
+          <Card className="exercise-card-hover cursor-pointer group relative">
+            {onToggleFavorite && (
+              <button
+                onClick={handleFavoriteClick}
+                className="absolute top-2 right-2 z-10 p-1.5 rounded-full bg-background/80 hover:bg-background transition-colors"
+                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              >
+                <Heart
+                  className={`w-4 h-4 transition-colors ${
+                    isFavorite ? 'fill-destructive text-destructive' : 'text-muted-foreground hover:text-destructive'
+                  }`}
+                />
+              </button>
+            )}
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start gap-2 pr-8">
+                <CardTitle className="text-base font-semibold leading-tight group-hover:text-foreground/80 transition-colors">
+                  {exercise.name}
+                </CardTitle>
+                <Play className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
               </div>
-            </div>
-            <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
-              <Dumbbell className="w-3.5 h-3.5" />
-              <span>{exercise.equipment}</span>
-            </div>
-          </CardContent>
-        </Card>
-      </DialogTrigger>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                <Badge variant="outline" className={difficultyColors[exercise.difficulty]}>
+                  {exercise.difficulty}
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {exercise.category}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="flex items-center gap-4">
+                <MuscleMap
+                  highlightedMuscles={exercise.primaryMuscles}
+                  secondaryMuscles={exercise.secondaryMuscles}
+                  size="sm"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground mb-1">Primary</p>
+                  <div className="flex flex-wrap gap-1">
+                    {exercise.primaryMuscles.map((muscle) => (
+                      <Badge key={muscle} variant="secondary" className="text-xs capitalize">
+                        {muscle}
+                      </Badge>
+                    ))}
+                  </div>
+                  {exercise.secondaryMuscles.length > 0 && (
+                    <>
+                      <p className="text-xs text-muted-foreground mb-1 mt-2">Secondary</p>
+                      <div className="flex flex-wrap gap-1">
+                        {exercise.secondaryMuscles.map((muscle) => (
+                          <Badge key={muscle} variant="outline" className="text-xs capitalize">
+                            {muscle}
+                          </Badge>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
+                <Dumbbell className="w-3.5 h-3.5" />
+                <span>{exercise.equipment}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </DialogTrigger>
+      </ExercisePreviewCard>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl">{exercise.name}</DialogTitle>

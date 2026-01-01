@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ExerciseLibrary } from '@/components/ExerciseLibrary';
 import { WorkoutGenerator } from '@/components/WorkoutGenerator';
 import { WorkoutTemplates } from '@/components/WorkoutTemplates';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { Dumbbell, Library, Sparkles, LayoutTemplate } from 'lucide-react';
 
 const Index = () => {
@@ -13,14 +14,17 @@ const Index = () => {
       {/* Header */}
       <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="container max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-foreground text-background">
-              <Dumbbell className="w-5 h-5" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-foreground text-background">
+                <Dumbbell className="w-5 h-5" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold tracking-tight">Musclepedia</h1>
+                <p className="text-xs text-muted-foreground">Your complete exercise encyclopedia</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight">Musclepedia</h1>
-              <p className="text-xs text-muted-foreground">Your complete exercise encyclopedia</p>
-            </div>
+            <ThemeToggle />
           </div>
         </div>
       </header>

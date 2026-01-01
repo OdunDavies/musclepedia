@@ -81,19 +81,39 @@ Day Categories:
 - Upper (for 4-day split): Combine PUSH and PULL exercises
 
 Guidelines:
-- Adjust exercise selection, rep ranges, and rest periods based on gender:
-  - Female: Prioritize glute/leg exercises, slightly higher reps (e.g., 12-15 for hypertrophy), shorter rest
-  - Male: Include more heavy compound movements, lower rep ranges (e.g., 8-12 for hypertrophy), longer rest
 - Match sets/reps/rest to the training goal:
   - Strength: 4-5 sets, 3-8 reps, 2-4 min rest
   - Hypertrophy: 3-4 sets, 8-15 reps, 60-90 sec rest
   - Endurance: 2-3 sets, 15-25 reps, 30-45 sec rest
-  - Weight Loss: 3-4 sets, 12-20 reps, 30-45 sec rest (prioritize compound movements for higher calorie burn)
 - Include 5-7 exercises per day (including core)
 - Use compound movements as primary exercises
 - ALWAYS include 1-2 CORE EXERCISES at the END of each workout as finishers
 - Vary core exercises across days for complete ab development
-- For WEIGHT LOSS goal: Include 1-2 CARDIO/HIIT exercises per workout day to maximize calorie burn. Place them at the end before core work or as finishers.`;
+
+GENDER-SPECIFIC WEIGHT LOSS PROTOCOLS (CRITICAL - apply when goal is Weight Loss):
+
+FOR FEMALE WEIGHT LOSS:
+- Structure: Full-body metabolic circuits or supersets within PPL framework
+- Rep ranges: 12-20 reps with moderate weight to maximize calorie burn
+- Rest periods: 20-30 seconds between exercises, 60-90 seconds between circuits
+- Exercise priority: Emphasize glute, leg, and back exercises (Romanian Deadlift, Walking Lunges, Leg Press, Lat Pulldown)
+- Include 2-3 CARDIO/HIIT exercises per session (Burpees, Mountain Climbers, Kettlebell Swings, Jump Rope, Box Jumps)
+- Pair exercises as supersets when possible for metabolic effect
+- Focus: Compound movements in circuit format to maximize calorie burn and EPOC (excess post-exercise oxygen consumption)
+- Add plyometric variations: Box Jumps, Jump Rope, Burpees
+
+FOR MALE WEIGHT LOSS:
+- Structure: Traditional PPL with cardio finishers
+- Rep ranges: 10-15 reps with challenging weight to preserve muscle while cutting
+- Rest periods: 45-60 seconds between sets
+- Exercise priority: Heavy compound lifts (Conventional Deadlift, Barbell Back Squat, Barbell Bench Press) to maximize muscle preservation and metabolic demand
+- Include 1-2 CARDIO/HIIT exercises as workout finishers (Kettlebell Swings, Battle Ropes, Rowing Machine)
+- Focus: Maintain strength while in caloric deficit, prioritize compound movements
+- Include power-based movements to boost metabolism
+
+FOR OTHER GOALS (non weight-loss):
+- Female: Prioritize glute/leg exercises, slightly higher reps (12-15), shorter rest periods
+- Male: Include more heavy compound movements, lower rep ranges (8-12), longer rest periods`;
 
     const userPrompt = `Create a ${splitDays}-day workout program for a ${gender || 'unspecified gender'} trainee.
 Training goal: ${goal}

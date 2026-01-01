@@ -880,3 +880,18 @@ export const muscleGroups: { id: MuscleGroup; name: string; category: string }[]
   { id: 'glutes', name: 'Glutes', category: 'Lower Body' },
   { id: 'calves', name: 'Calves', category: 'Lower Body' },
 ];
+
+// Equipment types extracted from exercises
+export const equipmentTypes = [
+  'Barbell',
+  'Dumbbells',
+  'Cable Machine',
+  'Bodyweight',
+  'Machine',
+  'Bench',
+  'Pull-up Bar',
+  'Resistance Band',
+  'Kettlebell',
+] as const;
+
+export type EquipmentType = typeof equipmentTypes[number];

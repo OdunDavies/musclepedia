@@ -1,16 +1,31 @@
-import { useState, useMemo } from 'react';
-import { exercises, muscleGroups, MuscleGroup } from '@/data/exercises';
+import { useState, useMemo, useEffect } from 'react';
+import { exercises, muscleGroups, MuscleGroup, equipmentTypes } from '@/data/exercises';
 import { ExerciseCard } from './ExerciseCard';
+import { ExerciseCardSkeleton } from './ExerciseCardSkeleton';
 import { InteractiveMuscleSelector } from './InteractiveMuscleSelector';
-import { Input } from '@/components/ui/input';
+import { SearchAutocomplete } from './SearchAutocomplete';
 import { Badge } from '@/components/ui/badge';
-import { Search, X } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { X, Heart } from 'lucide-react';
+import { useFavorites } from '@/hooks/useFavorites';
 
 export function ExerciseLibrary() {
   const [search, setSearch] = useState('');
   const [selectedMuscles, setSelectedMuscles] = useState<MuscleGroup[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+
+  // Simulate initial load
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const filteredExercises = useMemo(() => {
     return exercises.filter((exercise) => {
@@ -26,14 +41,26 @@ export function ExerciseLibrary() {
         !selectedDifficulty || exercise.difficulty === selectedDifficulty;
       const matchesCategory =
         !selectedCategory || exercise.category === selectedCategory;
+      const matchesEquipment =
+        selectedEquipment.length === 0 ||
+        selectedEquipment.some((eq) =>
+          exercise.equipment.toLowerCase().includes(eq.toLowerCase())
+        );
+      const matchesFavorites = !showFavoritesOnly || favorites.includes(exercise.id);
 
-      return matchesSearch && matchesMuscle && matchesDifficulty && matchesCategory;
+      return matchesSearch && matchesMuscle && matchesDifficulty && matchesCategory && matchesEquipment && matchesFavorites;
     });
-  }, [search, selectedMuscles, selectedDifficulty, selectedCategory]);
+  }, [search, selectedMuscles, selectedDifficulty, selectedCategory, selectedEquipment, showFavoritesOnly, favorites]);
 
   const toggleMuscle = (muscle: MuscleGroup) => {
     setSelectedMuscles((prev) =>
       prev.includes(muscle) ? prev.filter((m) => m !== muscle) : [...prev, muscle]
+    );
+  };
+
+  const toggleEquipment = (equipment: string) => {
+    setSelectedEquipment((prev) =>
+      prev.includes(equipment) ? prev.filter((e) => e !== equipment) : [...prev, equipment]
     );
   };
 
@@ -46,6 +73,8 @@ export function ExerciseLibrary() {
     setSelectedMuscles([]);
     setSelectedDifficulty(null);
     setSelectedCategory(null);
+    setSelectedEquipment([]);
+    setShowFavoritesOnly(false);
   };
 
   const groupedMuscles = muscleGroups.reduce(
@@ -59,7 +88,7 @@ export function ExerciseLibrary() {
     {} as Record<string, typeof muscleGroups>
   );
 
-  const hasActiveFilters = search || selectedMuscles.length > 0 || selectedDifficulty || selectedCategory;
+  const hasActiveFilters = search || selectedMuscles.length > 0 || selectedDifficulty || selectedCategory || selectedEquipment.length > 0 || showFavoritesOnly;
 
   const categories = [
     { id: 'push', label: 'Push' },
@@ -82,14 +111,45 @@ export function ExerciseLibrary() {
 
       {/* Search and Filters */}
       <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder="Search exercises..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
+        {/* Search Autocomplete */}
+        <SearchAutocomplete
+          exercises={exercises}
+          value={search}
+          onChange={setSearch}
+          onMuscleSelect={toggleMuscle}
+        />
+
+        {/* Favorites Toggle */}
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="favorites-only"
+            checked={showFavoritesOnly}
+            onCheckedChange={setShowFavoritesOnly}
           />
+          <Label htmlFor="favorites-only" className="flex items-center gap-1.5 cursor-pointer">
+            <Heart className={`w-4 h-4 ${showFavoritesOnly ? 'fill-destructive text-destructive' : ''}`} />
+            Show favorites only
+            {favorites.length > 0 && (
+              <span className="text-xs text-muted-foreground">({favorites.length})</span>
+            )}
+          </Label>
+        </div>
+
+        {/* Equipment Filter */}
+        <div>
+          <p className="text-sm font-medium mb-2">Equipment</p>
+          <div className="flex flex-wrap gap-2">
+            {equipmentTypes.map((eq) => (
+              <Badge
+                key={eq}
+                variant={selectedEquipment.includes(eq) ? 'default' : 'outline'}
+                className="cursor-pointer"
+                onClick={() => toggleEquipment(eq)}
+              >
+                {eq}
+              </Badge>
+            ))}
+          </div>
         </div>
 
         {/* Category Filter */}
@@ -172,12 +232,23 @@ export function ExerciseLibrary() {
 
       {/* Exercise Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredExercises.map((exercise) => (
-          <ExerciseCard key={exercise.id} exercise={exercise} />
-        ))}
+        {isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => (
+            <ExerciseCardSkeleton key={i} />
+          ))
+        ) : (
+          filteredExercises.map((exercise) => (
+            <ExerciseCard
+              key={exercise.id}
+              exercise={exercise}
+              isFavorite={isFavorite(exercise.id)}
+              onToggleFavorite={toggleFavorite}
+            />
+          ))
+        )}
       </div>
 
-      {filteredExercises.length === 0 && (
+      {!isLoading && filteredExercises.length === 0 && (
         <div className="text-center py-12">
           <p className="text-muted-foreground">No exercises match your filters.</p>
           <button

@@ -58,6 +58,16 @@ CORE EXERCISES:
 - Cable Woodchops (Obliques, Abs, Shoulders)
 - Russian Twists (Obliques, Abs)
 
+CARDIO/HIIT EXERCISES (for Weight Loss goal):
+- Jumping Jacks (Full Body, Cardio)
+- Burpees (Full Body, Cardio)
+- Mountain Climbers (Abs, Cardio)
+- Box Jumps (Quads, Glutes, Cardio)
+- Battle Ropes (Shoulders, Arms, Cardio)
+- Kettlebell Swings (Glutes, Hamstrings, Back, Cardio)
+- Jump Rope (Calves, Cardio)
+- Rowing Machine (Back, Arms, Cardio)
+
 PPL Structure by Training Days:
 - 3 days: Push / Pull / Legs
 - 4 days: Push / Pull / Legs / Upper (Push + Pull)
@@ -82,7 +92,8 @@ Guidelines:
 - Include 5-7 exercises per day (including core)
 - Use compound movements as primary exercises
 - ALWAYS include 1-2 CORE EXERCISES at the END of each workout as finishers
-- Vary core exercises across days for complete ab development`;
+- Vary core exercises across days for complete ab development
+- For WEIGHT LOSS goal: Include 1-2 CARDIO/HIIT exercises per workout day to maximize calorie burn. Place them at the end before core work or as finishers.`;
 
     const userPrompt = `Create a ${splitDays}-day workout program for a ${gender || 'unspecified gender'} trainee.
 Training goal: ${goal}

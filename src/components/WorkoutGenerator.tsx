@@ -84,7 +84,7 @@ export function WorkoutGenerator() {
 
       toast({
         title: "Workout Plan Generated!",
-        description: "Your personalized AI workout plan is ready.",
+        description: "Your personalized workout plan is ready.",
       });
 
     } catch (error) {
@@ -260,12 +260,12 @@ export function WorkoutGenerator() {
             {isGenerating ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                AI is Generating Your Plan...
+                Generating Your Plan...
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4 mr-2" />
-                Generate AI Workout Plan
+                Generate Workout Plan
               </>
             )}
           </Button>

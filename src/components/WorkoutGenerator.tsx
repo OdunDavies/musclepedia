@@ -22,6 +22,7 @@ interface WorkoutDay {
 interface GeneratedPlan {
   splitDays: number;
   goal: string;
+  gender: string;
   targetMuscles: string[];
   schedule: WorkoutDay[];
 }
@@ -88,18 +89,55 @@ export function WorkoutGenerator() {
 
       const template = splitTemplates[days] || splitTemplates[4];
       
-      // Rep and set schemes based on goal
+      // Rep and set schemes based on goal and gender
+      // Female workouts typically use slightly higher reps and shorter rest for toning
+      // Male workouts focus on heavier loads with lower reps
+      const isFemale = gender === 'female';
+      
       const schemes = {
-        strength: { sets: 5, reps: '3-5', rest: '3-4 min' },
-        hypertrophy: { sets: 4, reps: '8-12', rest: '60-90 sec' },
-        endurance: { sets: 3, reps: '15-20', rest: '30-45 sec' },
+        strength: { 
+          sets: isFemale ? 4 : 5, 
+          reps: isFemale ? '5-8' : '3-5', 
+          rest: isFemale ? '2-3 min' : '3-4 min' 
+        },
+        hypertrophy: { 
+          sets: isFemale ? 3 : 4, 
+          reps: isFemale ? '12-15' : '8-12', 
+          rest: isFemale ? '45-60 sec' : '60-90 sec' 
+        },
+        endurance: { 
+          sets: isFemale ? 3 : 3, 
+          reps: isFemale ? '18-25' : '15-20', 
+          rest: isFemale ? '20-30 sec' : '30-45 sec' 
+        },
       };
       
       const scheme = schemes[goal as keyof typeof schemes] || schemes.hypertrophy;
+      
+      // Exercise preferences by gender (prioritize certain exercises)
+      const femalePreferredExercises = [
+        'Hip Thrust', 'Romanian Deadlift', 'Lunges', 'Glute Bridge', 
+        'Cable Kickbacks', 'Leg Press', 'Lat Pulldown', 'Dumbbell Row'
+      ];
+      
+      const malePreferredExercises = [
+        'Bench Press', 'Barbell Squat', 'Deadlift', 'Overhead Press',
+        'Barbell Row', 'Pull-ups', 'Dips', 'Barbell Curl'
+      ];
 
       template.forEach((dayTemplate) => {
-        const dayExercises = relevantExercises
+        const preferredExercises = isFemale ? femalePreferredExercises : malePreferredExercises;
+        
+        // Sort exercises to prioritize gender-preferred ones
+        const sortedExercises = [...relevantExercises]
           .filter((e) => dayTemplate.categories.includes(e.category))
+          .sort((a, b) => {
+            const aPreferred = preferredExercises.some(pe => a.name.includes(pe)) ? -1 : 0;
+            const bPreferred = preferredExercises.some(pe => b.name.includes(pe)) ? -1 : 0;
+            return aPreferred - bPreferred;
+          });
+        
+        const dayExercises = sortedExercises
           .slice(0, 5)
           .map((e) => ({
             name: e.name,
@@ -132,6 +170,7 @@ export function WorkoutGenerator() {
       setGeneratedPlan({
         splitDays: days,
         goal,
+        gender: gender || 'Not specified',
         targetMuscles: targetMuscles.length > 0 ? targetMuscles : ['All muscle groups'],
         schedule,
       });
@@ -145,6 +184,7 @@ export function WorkoutGenerator() {
     let content = `WORKOUT PLAN\n`;
     content += `${'='.repeat(50)}\n\n`;
     content += `Split: ${generatedPlan.splitDays}-Day Program\n`;
+    content += `Gender: ${generatedPlan.gender.charAt(0).toUpperCase() + generatedPlan.gender.slice(1)}\n`;
     content += `Goal: ${generatedPlan.goal.charAt(0).toUpperCase() + generatedPlan.goal.slice(1)}\n`;
     content += `Target Muscles: ${generatedPlan.targetMuscles.join(', ')}\n\n`;
     content += `${'='.repeat(50)}\n\n`;

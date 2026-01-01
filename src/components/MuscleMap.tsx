@@ -1,9 +1,13 @@
-import { MuscleGroup } from '@/data/exercises';
+import { MuscleGroup, muscleGroups } from '@/data/exercises';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface MuscleMapProps {
   highlightedMuscles: MuscleGroup[];
   secondaryMuscles?: MuscleGroup[];
   size?: 'sm' | 'md' | 'lg';
+  interactive?: boolean;
+  onMuscleClick?: (muscle: MuscleGroup) => void;
+  selectedMuscle?: MuscleGroup | null;
 }
 
 const musclePathsFront: Record<string, string> = {
@@ -32,71 +36,118 @@ const sizeClasses = {
   lg: 'w-48 h-64',
 };
 
-export function MuscleMap({ highlightedMuscles, secondaryMuscles = [], size = 'md' }: MuscleMapProps) {
+const getMuscleDisplayName = (muscle: string): string => {
+  const found = muscleGroups.find(m => m.id === muscle);
+  return found ? found.name : muscle.charAt(0).toUpperCase() + muscle.slice(1);
+};
+
+export function MuscleMap({ 
+  highlightedMuscles, 
+  secondaryMuscles = [], 
+  size = 'md',
+  interactive = false,
+  onMuscleClick,
+  selectedMuscle
+}: MuscleMapProps) {
   const getMuscleClass = (muscle: string) => {
-    if (highlightedMuscles.includes(muscle as MuscleGroup)) {
-      return 'fill-foreground';
+    const isSelected = selectedMuscle === muscle;
+    const isHighlighted = highlightedMuscles.includes(muscle as MuscleGroup);
+    const isSecondary = secondaryMuscles.includes(muscle as MuscleGroup);
+    
+    let baseClass = 'fill-muted transition-all duration-200';
+    
+    if (isSelected) {
+      baseClass = 'fill-primary transition-all duration-200';
+    } else if (isHighlighted) {
+      baseClass = 'fill-foreground transition-all duration-200';
+    } else if (isSecondary) {
+      baseClass = 'fill-muted-foreground transition-all duration-200';
     }
-    if (secondaryMuscles.includes(muscle as MuscleGroup)) {
-      return 'fill-muted-foreground';
+    
+    if (interactive) {
+      baseClass += ' cursor-pointer hover:fill-primary/70';
     }
-    return 'fill-muted';
+    
+    return baseClass;
+  };
+
+  const handleMuscleClick = (muscle: string) => {
+    if (interactive && onMuscleClick) {
+      onMuscleClick(muscle as MuscleGroup);
+    }
+  };
+
+  const renderMusclePath = (muscle: string, path: string) => {
+    const pathElement = (
+      <path
+        key={muscle}
+        d={path}
+        className={getMuscleClass(muscle)}
+        onClick={() => handleMuscleClick(muscle)}
+      />
+    );
+
+    if (interactive) {
+      return (
+        <Tooltip key={muscle}>
+          <TooltipTrigger asChild>
+            {pathElement}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{getMuscleDisplayName(muscle)}</p>
+          </TooltipContent>
+        </Tooltip>
+      );
+    }
+
+    return pathElement;
   };
 
   return (
-    <div className="flex gap-4 items-center justify-center">
-      {/* Front View */}
-      <div className={`${sizeClasses[size]} relative`}>
-        <svg viewBox="0 0 100 190" className="w-full h-full">
-          {/* Head */}
-          <circle cx="50" cy="15" r="12" className="fill-muted stroke-border" />
-          {/* Neck */}
-          <rect x="45" y="25" width="10" height="8" className="fill-muted" />
-          {/* Body outline */}
-          <path
-            d="M30,33 Q50,30 70,33 L75,50 L82,90 L78,95 L65,95 L65,100 L55,100 L55,145 L64,175 L56,180 L50,175 L44,180 L36,175 L45,145 L45,100 L35,100 L35,95 L22,95 L18,90 L25,50 Z"
-            className="fill-muted stroke-border"
-          />
-          {/* Muscle groups */}
-          {Object.entries(musclePathsFront).map(([muscle, path]) => (
+    <TooltipProvider>
+      <div className="flex gap-4 items-center justify-center">
+        {/* Front View */}
+        <div className={`${sizeClasses[size]} relative`}>
+          <svg viewBox="0 0 100 190" className="w-full h-full">
+            {/* Head */}
+            <circle cx="50" cy="15" r="12" className="fill-muted stroke-border" />
+            {/* Neck */}
+            <rect x="45" y="25" width="10" height="8" className="fill-muted" />
+            {/* Body outline */}
             <path
-              key={muscle}
-              d={path}
-              className={`${getMuscleClass(muscle)} transition-colors duration-200`}
+              d="M30,33 Q50,30 70,33 L75,50 L82,90 L78,95 L65,95 L65,100 L55,100 L55,145 L64,175 L56,180 L50,175 L44,180 L36,175 L45,145 L45,100 L35,100 L35,95 L22,95 L18,90 L25,50 Z"
+              className="fill-muted stroke-border"
             />
-          ))}
-        </svg>
-        <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-muted-foreground">Front</span>
-      </div>
+            {/* Muscle groups */}
+            {Object.entries(musclePathsFront).map(([muscle, path]) => 
+              renderMusclePath(muscle, path)
+            )}
+          </svg>
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-muted-foreground">Front</span>
+        </div>
 
-      {/* Back View */}
-      <div className={`${sizeClasses[size]} relative`}>
-        <svg viewBox="0 0 100 190" className="w-full h-full">
-          {/* Head */}
-          <circle cx="50" cy="15" r="12" className="fill-muted stroke-border" />
-          {/* Neck */}
-          <rect x="45" y="25" width="10" height="8" className="fill-muted" />
-          {/* Body outline */}
-          <path
-            d="M30,33 Q50,30 70,33 L75,50 L82,90 L78,95 L65,95 L65,100 L55,100 L55,145 L64,175 L56,180 L50,175 L44,180 L36,175 L45,145 L45,100 L35,100 L35,95 L22,95 L18,90 L25,50 Z"
-            className="fill-muted stroke-border"
-          />
-          {/* Muscle groups */}
-          {Object.entries(musclePathsBack).map(([muscle, path]) => (
+        {/* Back View */}
+        <div className={`${sizeClasses[size]} relative`}>
+          <svg viewBox="0 0 100 190" className="w-full h-full">
+            {/* Head */}
+            <circle cx="50" cy="15" r="12" className="fill-muted stroke-border" />
+            {/* Neck */}
+            <rect x="45" y="25" width="10" height="8" className="fill-muted" />
+            {/* Body outline */}
             <path
-              key={muscle}
-              d={path}
-              className={`${getMuscleClass(muscle)} transition-colors duration-200`}
+              d="M30,33 Q50,30 70,33 L75,50 L82,90 L78,95 L65,95 L65,100 L55,100 L55,145 L64,175 L56,180 L50,175 L44,180 L36,175 L45,145 L45,100 L35,100 L35,95 L22,95 L18,90 L25,50 Z"
+              className="fill-muted stroke-border"
             />
-          ))}
-          {/* Calves on back too */}
-          <path
-            d="M36,145 L44,145 L44,175 L36,175 Z M56,145 L64,145 L64,175 L56,175 Z"
-            className={`${getMuscleClass('calves')} transition-colors duration-200`}
-          />
-        </svg>
-        <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-muted-foreground">Back</span>
+            {/* Muscle groups */}
+            {Object.entries(musclePathsBack).map(([muscle, path]) => 
+              renderMusclePath(muscle, path)
+            )}
+            {/* Calves on back too */}
+            {renderMusclePath('calves', 'M36,145 L44,145 L44,175 L36,175 Z M56,145 L64,145 L64,175 L56,175 Z')}
+          </svg>
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-xs text-muted-foreground">Back</span>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }
